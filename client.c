@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
     if ((temp[0] == 's') || (temp[0] == 'S'))
         strcpy(buffer, "CAP\n");
     if ((temp[0] == 't') || (temp[0] == 'T'))
-	strcpy(buffer, "FILE\n);
+	strcpy(buffer, "FILE\n");
     printf("Enter the string to echo: ");
     fgets(buffer2, MAX_LINE, stdin);
     strncat(buffer,buffer2,strlen(buffer2));

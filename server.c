@@ -43,8 +43,14 @@ int main(int argc, char *argv[]) {
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
     char      buffer[MAX_LINE];      /*  character buffer          */
+    char      buffer2[MAX_LINE];     /*  buffer for cap/file */
+    char      buffer3[MAX_LINE];     /*  buffer for cap string */ 
     char     *endptr;                /*  for strtol()              */
-
+    int       y = 0;		     /*  counter 		*/
+    int       x = 0;		     /*  counter 		*/
+    int	      z = 0;		     /*  counter		*/
+    FILE     *fp;		     /*  file pointer		   */
+ 
 
     /*  Get port number from the command line, and
         set to default port if no arguments were supplied  */
@@ -113,13 +119,77 @@ int main(int argc, char *argv[]) {
 	    then simply write it back to the same socket.     */
 
 	Readline(conn_s, buffer, MAX_LINE-1);
-	printf("<%s>", buffer);
-	Writeline(conn_s, buffer, strlen(buffer));
-
-	memset(buffer,0,strlen(buffer));
 	
+	
+	printf("%s\n", buffer);
+	memset(buffer2,'\0',sizeof(buffer2)); 
+	y = 0;
+	while (buffer[y] != '\n')
+	{
+	    buffer2[y] = buffer[y];
+	    y++;
+	}
+	y = 0;
+	printf("%s\n", buffer2);
+	memset(buffer3,'\0',sizeof(buffer3)); /*clear out buffer */
+	while(buffer2[x] != '\0')
+	{
+	    if(buffer2[x] == 'C')
+	    {
+		x++;
+		if(buffer2[x] == 'A')
+		{
+		    x++;
+		    if(buffer2[x] == 'P')
+		    {
+			printf("%s\n",buffer2);
+			while(buffer[y+4] != '\n')
+	    		{
+                		buffer3[y] = toupper(buffer[y+4]);
+				y++;
+	    		}
+		    }
+		    else
+			break;
+		}
+		else
+		    break;
+	    }
+	    else if (buffer2[x] == 'F')
+	    {
+		x++;
+		if (buffer2[x] == 'I')
+		{
+		    x++;
+		    if(buffer2[x] == 'L')
+		    {
+			x++;
+			if(buffer2[x] == 'E')
+			{
+			    while(buffer[z+5] != '\n')
+			    {
+			   	buffer3[z] = buffer[z+5];
+			   	z++;
+			    }
+			    printf("<%s>\n",buffer2); 
+			    printf("%s\n",buffer3);
+			}
+			else
+				break;
+		    }
+		    else
+			break;
+		}
+		else
+		    break;
+	    }
+	    else
+		break;		/*if buffer2 is not CAP or FILE */ 
 		
+	}
 	
+	x=0;
+	Writeline(conn_s, buffer3, strlen(buffer));
 
 	/*  Close the connected socket  */
 
@@ -147,9 +217,11 @@ ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
 	if ( (rc = read(sockd, &c, 1)) == 1 ) {
 	    *buffer++ = c;
 	    if ( c == '\n' )
-		{
-				break;
-		}
+	    {
+	        counter++;
+	        if (counter > 1)
+	            break;
+	    }
 	}
 	else if ( rc == 0 ) {
 	    if ( n == 1 )
