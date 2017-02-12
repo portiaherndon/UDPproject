@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
 			   	z++;
 			    }
 			    z=0; 
-			    if(access(buffer3,F_OK) == 0)   /*test to see if file exists */ 
+	    		    if((access(buffer3,F_OK) == 0) && (access(buffer3,R_OK)==0))   
 			    {
 				printf("exists\n");
 				ifp = fopen("client.c","r"); /*open file*/
