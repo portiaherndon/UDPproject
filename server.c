@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 
 /*  Global constants  */
@@ -50,6 +51,9 @@ int main(int argc, char *argv[]) {
     int       x = 0;		     /*  counter 		*/
     int	      z = 0;		     /*  counter		*/
     FILE     *ifp;		     /*  file pointer		   */
+    char      c;		     /*  used to read file	   */
+    ssize_t   character;
+    char*     buf[MAX_LINE];
  
 
     /*  Get port number from the command line, and
@@ -121,7 +125,7 @@ int main(int argc, char *argv[]) {
 	Readline(conn_s, buffer, MAX_LINE-1);
 	
 	
-	printf("%s\n", buffer);
+	//printf("%s\n", buffer);
 	memset(buffer2,'\0',sizeof(buffer2)); 
 	y = 0;
 	while (buffer[y] != '\n')
@@ -130,7 +134,7 @@ int main(int argc, char *argv[]) {
 	    y++;
 	}
 	y = 0;
-	printf("%s\n", buffer2);
+	//printf("%s\n", buffer2);
 	memset(buffer3,'\0',sizeof(buffer3)); /*clear out buffer */
 	while(buffer2[x] != '\0')
 	{
@@ -142,7 +146,7 @@ int main(int argc, char *argv[]) {
 		    x++;
 		    if(buffer2[x] == 'P')
 		    {
-			printf("%s\n",buffer2);
+			//printf("%s\n",buffer2);
 			while(buffer[y+4] != '\n')
 	    		{
                 		buffer3[y] = toupper(buffer[y+4]);
@@ -175,12 +179,27 @@ int main(int argc, char *argv[]) {
 			    z=0; 
 	    		    if((access(buffer3,F_OK) == 0) && (access(buffer3,R_OK)==0))   
 			    {
-				printf("exists\n");
-				ifp = fopen("client.c","r"); /*open file*/
-				if (ifp == NULL)
-				   //printf("open");
-				    perror("Error");
-		            }
+				//printf("exists\n");
+				ifp = fopen(buffer3,"r"); /*open file*/
+				//printf("hello\n");
+				if (ifp != NULL)
+				{
+				   printf("open\n");
+				}
+				else
+				    printf("Can't Open\n");
+				memset(buf,'\0',sizeof(buf));
+				int r =0;
+				while(!feof(ifp))
+				{
+				    //fread(&buf,1,1,ifp);
+				    //buf[c]++;
+				    buf[r] = fgetc(ifp);
+				    r++;
+				    if(buf[MAX_LINE-1] != '\0')
+				        break;
+				}
+			    }
 			    else
 				printf("Does not exist\n");
 			}
@@ -198,8 +217,13 @@ int main(int argc, char *argv[]) {
 		
 	} 
 	x=0;
-	Writeline(conn_s, buffer3, strlen(buffer3));
-
+	//printf("%s",buf[0]);
+	//if(buffer2 == "CAP")
+	    Writeline(conn_s, buffer3, strlen(buffer3));
+	//else if (buffer == "FILE")
+	//  Writeline(conn_s, buf, strlen(buf));
+	
+ 
 	/*  Close the connected socket  */
 
 	if ( close(conn_s) < 0 ) {
