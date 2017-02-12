@@ -116,6 +116,10 @@ int main(int argc, char *argv[]) {
 	printf("<%s>", buffer);
 	Writeline(conn_s, buffer, strlen(buffer));
 
+	memset(buffer,0,strlen(buffer));
+	
+		
+	
 
 	/*  Close the connected socket  */
 
@@ -189,4 +193,4 @@ ssize_t Writeline(int sockd, const void *vptr, size_t n) {
     return n;
 }
 
-# UDPproject
+
