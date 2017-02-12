@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     char     *szAddress;             /*  Holds remote IP address   */
     char     *szPort;                /*  Holds remote port         */
     char     *endptr;                /*  for strtol()              */
-    char     *temp[MAX_LINE];	     	     /*  user input     	   */
+    char      temp[MAX_LINE];	     	     /*  user input     	   */
 
     /*  Get command line arguments  */
 
@@ -107,26 +107,36 @@ int main(int argc, char *argv[]) {
     memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
     printf("Please enter s for string, t for file, or q to quit: ");
     
-    gets(temp);
-    /*if (temp[1] != '\0')*/
-	
-    if ((temp[0] == 's') || (temp[0] == 'S'))
-        strcpy(buffer, "CAP\n");
-    if ((temp[0] == 't') || (temp[0] == 'T'))
-	strcpy(buffer, "FILE\n");
-    printf("Enter the string to echo: ");
-    fgets(buffer2, MAX_LINE, stdin);
-    strncat(buffer,buffer2,strlen(buffer2));
+    fgets(temp,MAX_LINE,stdin);
+    while((temp[0] != 'q') || (temp[0] != 'Q'))
+    {
+        if (temp[1] != '\n')
+	{
+    
+	    printf("Input is incorrect\n");
+	    memset(temp,'\0',sizeof(temp));
+	    break;
+        }
+        if ((temp[0] == 's') || (temp[0] == 'S'))
+            strcpy(buffer, "CAP\n");
+        if ((temp[0] == 't') || (temp[0] == 'T'))
+	    strcpy(buffer, "FILE\n");
+        memset(temp,'\0',sizeof(temp));
+        printf("Enter the string: ");
+        fgets(buffer2, MAX_LINE, stdin);
+        strncat(buffer,buffer2,strlen(buffer2));
 
     /*  Send string to echo server, and retrieve response  */
 
     Writeline(conn_s, buffer, strlen(buffer));
     Readline(conn_s, buffer, MAX_LINE-1);
-
-
+    
     /*  Output echoed string  */
 
     printf("Echo response: %s\n", buffer);
+    printf("Please enter s for string, t for file, or q to quit: ");
+    fgets(temp,MAX_LINE,stdin);
+    }
 
     return EXIT_SUCCESS;
 }
