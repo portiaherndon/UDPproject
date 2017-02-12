@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     FILE     *ifp;		     /*  file pointer		   */
     char      c;		     /*  used to read file	   */
     ssize_t   character;
-    char*     buf[MAX_LINE];
+    char      buf[MAX_LINE];
  
 
     /*  Get port number from the command line, and
@@ -185,19 +185,14 @@ int main(int argc, char *argv[]) {
 				if (ifp != NULL)
 				{
 				   printf("open\n");
+				   while(character = fread(buf,1,sizeof(buf),ifp))
+				   {
+			                //printf("%s",buf);
+					Writeline(conn_s,buf,strlen(buf));
+				   }
 				}
 				else
 				    printf("Can't Open\n");
-				memset(buf,'\0',sizeof(buf));
-				int r =0;
-				int s =0;
-				while((character = fread(buf,1,sizeof(buf),ifp)) > 0)
-				{
-				   printf("%s",buf);
-				}	
-				
-				    
-				
 			    }
 			    else
 				printf("Does not exist\n");
