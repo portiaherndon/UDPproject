@@ -190,15 +190,14 @@ int main(int argc, char *argv[]) {
 				    printf("Can't Open\n");
 				memset(buf,'\0',sizeof(buf));
 				int r =0;
-				while(!feof(ifp))
+				int s =0;
+				while((character = fread(buf,1,sizeof(buf),ifp)) > 0)
 				{
-				    //fread(&buf,1,1,ifp);
-				    //buf[c]++;
-				    buf[r] = fgetc(ifp);
-				    r++;
-				    if(buf[MAX_LINE-1] != '\0')
-				        break;
-				}
+				   printf("%s",buf);
+				}	
+				
+				    
+				
 			    }
 			    else
 				printf("Does not exist\n");
