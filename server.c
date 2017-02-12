@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
 	    		{
                 		buffer3[y] = toupper(buffer[y+4]);
 				y++;
-	    		}
+	    		} 
 		    }
 		    else
 			break;
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
 		else
 		    break;
 	    }
-	    else if (buffer2[x] == 'F')
+            else if (buffer2[x] == 'F')
 	    {
 		x++;
 		if (buffer2[x] == 'I')
@@ -166,13 +166,20 @@ int main(int argc, char *argv[]) {
 			x++;
 			if(buffer2[x] == 'E')
 			{
+			    z = 0;
 			    while(buffer[z+5] != '\n')
 			    {
 			   	buffer3[z] = buffer[z+5];
 			   	z++;
 			    }
-			    printf("<%s>\n",buffer2); 
-			    printf("%s\n",buffer3);
+			    z=0; 
+			    if(access(buffer3,F_OK) != -1)   /*test to see if file exists */ 
+			    {
+				printf("exists\n");
+				
+			    }
+			    else
+				printf("Does not exist\n");
 			}
 			else
 				break;
@@ -186,10 +193,9 @@ int main(int argc, char *argv[]) {
 	    else
 		break;		/*if buffer2 is not CAP or FILE */ 
 		
-	}
-	
+	} 
 	x=0;
-	Writeline(conn_s, buffer3, strlen(buffer));
+	Writeline(conn_s, buffer3, strlen(buffer3));
 
 	/*  Close the connected socket  */
 
