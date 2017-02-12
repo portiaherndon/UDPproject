@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     int       y = 0;		     /*  counter 		*/
     int       x = 0;		     /*  counter 		*/
     int	      z = 0;		     /*  counter		*/
-    FILE     *fp;		     /*  file pointer		   */
+    FILE     *ifp;		     /*  file pointer		   */
  
 
     /*  Get port number from the command line, and
@@ -173,11 +173,14 @@ int main(int argc, char *argv[]) {
 			   	z++;
 			    }
 			    z=0; 
-			    if(access(buffer3,F_OK) != -1)   /*test to see if file exists */ 
+			    if(access(buffer3,F_OK) == 0)   /*test to see if file exists */ 
 			    {
 				printf("exists\n");
-				
-			    }
+				ifp = fopen("client.c","r"); /*open file*/
+				if (ifp == NULL)
+				   //printf("open");
+				    perror("Error");
+		            }
 			    else
 				printf("Does not exist\n");
 			}
