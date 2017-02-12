@@ -50,10 +50,11 @@ int main(int argc, char *argv[]) {
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
     char      buffer[MAX_LINE];      /*  character buffer          */
+    char      buffer2[MAX_LINE];	     /*  character buffer	   */	
     char     *szAddress;             /*  Holds remote IP address   */
     char     *szPort;                /*  Holds remote port         */
     char     *endptr;                /*  for strtol()              */
-
+    char     *temp[MAX_LINE];	     	     /*  user input     	   */
 
     /*  Get command line arguments  */
 
@@ -103,9 +104,19 @@ int main(int argc, char *argv[]) {
 
     /*  Get string to echo from user  */
 
-    printf("Enter the string to echo: ");
-    fgets(buffer, MAX_LINE, stdin);
+    memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
+    printf("Please enter s for string, t for file, or q to quit: ");
     
+    gets(temp);
+    /*if (temp[1] != '\0')*/
+	
+    if ((temp[0] == 's') || (temp[0] == 'S'))
+        strcpy(buffer, "CAP\n");
+    if ((temp[0] == 't') || (temp[0] == 'T'))
+	strcpy(buffer, "FILE\n);
+    printf("Enter the string to echo: ");
+    fgets(buffer2, MAX_LINE, stdin);
+    strncat(buffer,buffer2,strlen(buffer2));
 
     /*  Send string to echo server, and retrieve response  */
 
@@ -157,15 +168,21 @@ int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
 ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
     ssize_t n, rc;
     char    c, *buffer;
-
+    int    counter   = 0;
     buffer = vptr;
 
     for ( n = 1; n < maxlen; n++ ) {
 	
 	if ( (rc = read(sockd, &c, 1)) == 1 ) {
 	    *buffer++ = c;
-	    if ( c == '\n' )
-		break;
+	    if ( c == '\n')
+	    {	
+		counter++;
+		if(counter > 1) 
+		{
+		    break;
+		}
+	    }
 	}
 	else if ( rc == 0 ) {
 	    if ( n == 1 )
@@ -209,4 +226,4 @@ ssize_t Writeline(int sockd, const void *vptr, size_t n) {
     return n;
 }
 
-#UDPproject
+
