@@ -56,6 +56,9 @@ int main(int argc, char *argv[]) {
     char     *endptr;                /*  for strtol()              */
     char      temp[MAX_LINE];	     	     /*  user input     	   */
 
+
+
+
     /*  Get command line arguments  */
 
     ParseCmdLine(argc, argv, &szAddress, &szPort);
@@ -78,7 +81,8 @@ int main(int argc, char *argv[]) {
     }
 
 
-    /*  Set all bytes in socket address structure to
+
+     /*  Set all bytes in socket address structure to
         zero, and fill in the relevant data members   */
 
     memset(&servaddr, 0, sizeof(servaddr));
@@ -94,6 +98,7 @@ int main(int argc, char *argv[]) {
     }
 
     
+
     /*  connect() to the remote echo server  */
 
     if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
@@ -104,13 +109,11 @@ int main(int argc, char *argv[]) {
 
     /*  Get string to echo from user  */
 
-    memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
-    printf("Please enter s for string, t for file, or q to quit: ");
+        memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
+        printf("Please enter s for string, t for file, or q to quit: ");
     
-    fgets(temp,MAX_LINE,stdin);
-    //while((temp[0] != 'q') || (temp[0] != 'Q'))
-    //{
-        //fflush(stdin);
+        fgets(temp,MAX_LINE,stdin);
+
 	if (temp[1] != '\n')
 	{
     
@@ -119,12 +122,7 @@ int main(int argc, char *argv[]) {
 	    exit(0);	
 	   // break;
         }
-	//if(connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr))<0)
-	//{
-	//	printf("ECHOCLNT: Error calling connect()\n");
-	//	exit(EXIT_FAILURE);
-	//}
-        if ((temp[0] == 's') || (temp[0] == 'S'))
+	if ((temp[0] == 's') || (temp[0] == 'S'))
             strcpy(buffer, "CAP\n");
         if ((temp[0] == 't') || (temp[0] == 'T'))
 	    strcpy(buffer, "FILE\n");
@@ -138,23 +136,14 @@ int main(int argc, char *argv[]) {
 
         Writeline(conn_s, buffer, strlen(buffer));
         Readline(conn_s, buffer, MAX_LINE-1);
-    
-        /*  Output echoed string  */
+	/*  Output echoed string  */
 
         printf("Echo response: %s\n", buffer);
-        //printf("Please enter s for string, t for file, or q to quit: ");
-	//fgets(temp,MAX_LINE,stdin);
         memset(buffer,'\0',sizeof(buffer));
         memset(buffer2,'\0',sizeof(buffer2));
-        int p = -1;
-        //while(p != 0)
-        //{
-	//	p=shutdown(conn_s,2);
-	//	printf("%d\n",p);
-	//}
-	//close(conn_s);
-    //}
+        
 
+    close(conn_s);
     return EXIT_SUCCESS;
 }
 
@@ -249,7 +238,7 @@ ssize_t Writeline(int sockd, const void *vptr, size_t n) {
 	nleft  -= nwritten;
 	buffer += nwritten;
     }
-
+  
     return n;
 }
 
