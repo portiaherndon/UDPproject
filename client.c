@@ -124,12 +124,15 @@ int main(int argc, char *argv[]) {
 	if((temp[0] == 's') || (temp[0] == 'S'))   
 	    strcpy(buffer,"CAP\n");   		//send cap if user enter s
 	if((temp[0] == 't') || (temp[0] == 'T'))
+	{
 	    strcpy(buffer,"FILE\n");		//send file is user enter t
+	    
+	}
 	memset(temp,'\0',sizeof(temp));		//reinitalize buffer
 	printf("Enter the string: ");		//request string from user
 	fgets(buffer2,MAX_LINE,stdin);		//receive string from user
 	strncat(buffer,buffer2,sizeof(buffer2));//concat string with action
- 	//printf("%s",buffer);	
+ 		
 	/*send string to server and receive response*/
 	sendto(conn_s,buffer,MAX_LINE,0,(struct sockaddr *)&servaddr,sizeof(servaddr));
 	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,NULL,NULL);
@@ -137,7 +140,10 @@ int main(int argc, char *argv[]) {
 	printf("Print response: %s\n",buffer);
 	memset(buffer,'\0',sizeof(buffer));
 	memset(buffer2,'\0',sizeof(buffer2));
-	close(conn_s);	
+	if( close(conn_s)< 0)
+	{
+	   fprintf(stderr, "SERVER: Error calling close(): %s\n", strerror(errno)) ;
+	}	
     }    
     
 

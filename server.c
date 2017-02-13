@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
 	//Readline(conn_s, buffer, MAX_LINE-1);
 	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,(struct sockaddr*) &cliaddr,&clilen);
 	
-	printf("%s",buffer);
+
 	memset(buffer2,'\0',sizeof(buffer2)); 
 	y = 0;
 	while (buffer[y] != '\n')
@@ -163,11 +163,11 @@ int main(int argc, char *argv[]) {
 	    y++;
 	}
 	y = 0;
-	//printf("buffer2 %s\n",buffer2);
+	
 	
 	
 	memset(buffer3,'\0',sizeof(buffer3)); /*clear out buffer */
-	//printf("Buffer 2 %s",buffer2);
+	
 	while(buffer2[x] != '\0')
 	{
 	    if(buffer2[x] == 'C')
@@ -185,9 +185,9 @@ int main(int argc, char *argv[]) {
 				y++;
 	    		}
 		    	//Writeline(conn_s,buffer3, strlen(buffer3)); 
-			//printf("hello %s", buffer3);
+			
 			sendto(conn_s,buffer3,msglen,0,(struct sockaddr *)&cliaddr,clilen);
-			printf("%s\n",buffer3);
+			
 		    }
 		    else
 			break;
@@ -268,7 +268,7 @@ int main(int argc, char *argv[]) {
 	/*  Close the connected socket  */
 
 	if ( close(conn_s) < 0 ) {
-	    fprintf(stderr, "ECHOSERV: Error calling close()\n");
+	    fprintf(stderr, "ECHOSERV: Error calling close(): %s\n", strerror(errno));
 	    exit(EXIT_FAILURE);
 	}	
     }
