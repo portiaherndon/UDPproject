@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
     char      c;		     /*  used to read file	   */
     ssize_t   character;
     char      buf[MAX_LINE];
+    ssize_t   num_bytes = 0;
  
 
     /*  Get port number from the command line, and
@@ -151,7 +152,8 @@ int main(int argc, char *argv[]) {
 	    		{
                 		buffer3[y] = toupper(buffer[y+4]);
 				y++;
-	    		} 
+	    		}
+		    Writeline(conn_s,buffer3, strlen(buffer3)); 
 		    }
 		    else
 			break;
@@ -179,23 +181,37 @@ int main(int argc, char *argv[]) {
 			    z=0; 
 	    		    if((access(buffer3,F_OK) == 0) && (access(buffer3,R_OK)==0))   
 			    {
-				//printf("exists\n");
+				
 				ifp = fopen(buffer3,"r"); /*open file*/
-				//printf("hello\n");
+				
 				if (ifp != NULL)
 				{
 				   printf("open\n");
-				   while(character = fread(buf,1,sizeof(buf),ifp))
+				   do
 				   {
-			                //printf("%s",buf);
-					Writeline(conn_s,buf,strlen(buf));
-				   }
+				       while(character = fread(buf,1,sizeof(buf),ifp))
+				       {
+			                    Writeline(conn_s,buf,strlen(buf));
+					    memset(buf,'\0',sizeof(buf));
+					    num_bytes = num_bytes + character;
+					
+				       }
+				   }while(character != 0);
 				}
 				else
-				    printf("Can't Open\n");
+				{
+				    
+				    strcpy(buf,"CANTFIND\n");	
+				    Writeline(conn_s, buf, strlen(buf));
+				}
 			    }
 			    else
-				printf("Does not exist\n");
+			    {
+				strcpy(buf,"NOTFOUND\n");
+				Writeline(conn_s, buf, strlen(buf));
+				Writeline(conn_s,buffer2,strlen(buffer2));
+				Writeline(conn_s,buffer3,strlen(buffer3));
+			    }
 			}
 			else
 				break;
@@ -211,10 +227,10 @@ int main(int argc, char *argv[]) {
 		
 	} 
 	x=0;
-	//printf("%s",buf[0]);
-	//if(buffer2 == "CAP")
-	    Writeline(conn_s, buffer3, strlen(buffer3));
-	//else if (buffer == "FILE")
+
+	
+	//  Writeline(conn_s, buffer3, strlen(buffer3));
+	
 	//  Writeline(conn_s, buf, strlen(buf));
 	
  

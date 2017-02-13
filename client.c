@@ -96,10 +96,10 @@ int main(int argc, char *argv[]) {
     
     /*  connect() to the remote echo server  */
 
-    //if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
-	//printf("ECHOCLNT: Error calling connect()\n");
-	//exit(EXIT_FAILURE);
-    //}
+    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
+	printf("ECHOCLNT: Error calling connect()\n");
+	exit(EXIT_FAILURE);
+    }
 
 
     /*  Get string to echo from user  */
@@ -108,21 +108,22 @@ int main(int argc, char *argv[]) {
     printf("Please enter s for string, t for file, or q to quit: ");
     
     fgets(temp,MAX_LINE,stdin);
-    while((temp[0] != 'q') || (temp[0] != 'Q'))
-    {
+    //while((temp[0] != 'q') || (temp[0] != 'Q'))
+    //{
         //fflush(stdin);
 	if (temp[1] != '\n')
 	{
     
 	    printf("Input is incorrect\n");
 	    memset(temp,'\0',sizeof(temp));
-	    break;
+	    exit(0);	
+	   // break;
         }
-	if(connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr))<0)
-	{
-		printf("ECHOCLNT: Error calling connect()\n");
-		exit(EXIT_FAILURE);
-	}
+	//if(connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr))<0)
+	//{
+	//	printf("ECHOCLNT: Error calling connect()\n");
+	//	exit(EXIT_FAILURE);
+	//}
         if ((temp[0] == 's') || (temp[0] == 'S'))
             strcpy(buffer, "CAP\n");
         if ((temp[0] == 't') || (temp[0] == 'T'))
@@ -133,20 +134,26 @@ int main(int argc, char *argv[]) {
         strncat(buffer,buffer2,strlen(buffer2));
 
 
-    /*  Send string to echo server, and retrieve response  */
+        /*  Send string to echo server, and retrieve response  */
 
-    Writeline(conn_s, buffer, strlen(buffer));
-    Readline(conn_s, buffer, MAX_LINE-1);
+        Writeline(conn_s, buffer, strlen(buffer));
+        Readline(conn_s, buffer, MAX_LINE-1);
     
-    /*  Output echoed string  */
+        /*  Output echoed string  */
 
-    printf("Echo response: %s\n", buffer);
-    printf("Please enter s for string, t for file, or q to quit: ");
-    fgets(temp,MAX_LINE,stdin);
-    memset(buffer,'\0',sizeof(buffer));
-    memset(buffer2,'\0',sizeof(buffer2));
-    int p = shutdown(conn_s,2);
-    }
+        printf("Echo response: %s\n", buffer);
+        printf("Please enter s for string, t for file, or q to quit: ");
+        fgets(temp,MAX_LINE,stdin);
+        memset(buffer,'\0',sizeof(buffer));
+        memset(buffer2,'\0',sizeof(buffer2));
+        int p = -1;
+        //while(p != 0)
+        //{
+	//	p=shutdown(conn_s,2);
+	//	printf("%d\n",p);
+	//}
+	//close(conn_s);
+    //}
 
     return EXIT_SUCCESS;
 }
