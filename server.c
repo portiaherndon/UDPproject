@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 	exit(EXIT_FAILURE);
     }*/
 
-    bind(conn_s, &servaddr, sizeof(servaddr));  //UDP bind
+    bind(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr));  //UDP bind
 
     /*if ( listen(list_s, LISTENQ) < 0 ) {
 	fprintf(stderr, "ECHOSERV: Error calling listen()\n");
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
 	    then simply write it back to the same socket.     */
 
 	//Readline(conn_s, buffer, MAX_LINE-1);
-	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,cliaddr,&clilen);
+	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,(struct sockaddr*) &cliaddr,&clilen);
 	
 
 	memset(buffer2,'\0',sizeof(buffer2)); 
@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
 				y++;
 	    		}
 		    	//Writeline(conn_s,buffer3, strlen(buffer3)); 
-			sendto(conn_s,buffer3,msglen,0,cliaddr,clilen);
+			sendto(conn_s,buffer3,msglen,0,(struct sockaddr *)&cliaddr,clilen);
 		    }
 		    else
 			break;

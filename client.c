@@ -49,13 +49,15 @@ int main(int argc, char *argv[]) {
     int       conn_s;                /*  connection socket         */
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
+    struct    sockaddr_in cliaddr;   /*  socket address for client */
     char      buffer[MAX_LINE];      /*  character buffer          */
     char      buffer2[MAX_LINE];	     /*  character buffer	   */	
     char     *szAddress;             /*  Holds remote IP address   */
     char     *szPort;                /*  Holds remote port         */
     char     *endptr;                /*  for strtol()              */
     char      temp[MAX_LINE];	     	     /*  user input     	   */
-
+    socklen_t clilen;
+    int msglen;
 
 
 
@@ -75,10 +77,13 @@ int main(int argc, char *argv[]) {
 
     /*  Create the listening socket  */
 
-    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
+    /*if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
 	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
 	exit(EXIT_FAILURE);
-    }
+    }*/
+
+    conn_s = socket(PF_INET,SOCK_DGRAM,0);
+    
 
 
 
@@ -97,30 +102,21 @@ int main(int argc, char *argv[]) {
 	exit(EXIT_FAILURE);
     }
 
+
     
-
-    /*			create UDP socket		*/
-    int mysock;				/*connection socket*/
-    struct sockaddr_in myaddr, cliaddr; /*ip for client and server*/
-    socklen_t clilen;
-    int msglen;
-
-    mysock = socket(PF_INET,SOCK_DGRAM,0);
-    memset(&servaddr,0,sizeof(servaddr));
-    myaddr.sin_family = AF_INET;
-    myaddr.sin_port = htons(S_PORT);
-    myaddr.sin_addr = hton1(INADDR_ANY);
-    bind(mysock, &myaddr, sizeof(myaddr));
+    
+    
+    
+    
+    
     while(1)
     {
-        len=sizeof(cliaddr);
-	msglen=recvfrom(mysock,msgbuf,MAX_LINE,0,cliaddr,&clilen);
-	memset(temp,'\0',sizeof(temp));    /*clear temp buffer */
+        memset(temp,'\0',sizeof(temp));    /*clear temp buffer */
 	printf("Please enter s for string, t for file, or q to quit: ");
-    	fgets(temp,MAX_LINE,stdion);
+    	fgets(temp,MAX_LINE,stdin);
     	if(temp[1] != '\n')
     	{
-	    printf("Input is incorrect!")  //test for right amount of char
+	    printf("Input is incorrect!");  //test for right amount of char
 	    memset(temp,'\0',sizeof(temp)); //reinitialize buffer
 	    exit(0); 				//exit upon error
 	    //break;	
@@ -135,18 +131,15 @@ int main(int argc, char *argv[]) {
 	strncat(buffer,buffer2,sizeof(buffer2));//concat string with action
 	
 	/*send string to server and receive response*/
-	sendto(mysock,buffer,MAX_LINE,0,cliaddr,clilen);
-	msglen = recvfrom(cli_sock,buffer,MAX_LINE,0,NULL,NULL);
+	sendto(conn_s,buffer,MAX_LINE,0,(struct sockaddr *)&cliaddr,clilen);
+	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,NULL,NULL);
+	/*output echoed results */
+	printf("Print response: %s\n",buffer);
+	memset(buffer,'\0',sizeof(buffer));
+	memset(buffer2,'\0',sizeof(buffer2));
 	
     }    
     
-
-    /*			UDP socket created		*/
-
-
-
-
-
 
     /*  connect() to the remote echo server  */
 
@@ -158,33 +151,33 @@ int main(int argc, char *argv[]) {
 
     /*  Get string to echo from user  */
 
-        memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
-        printf("Please enter s for string, t for file, or q to quit: ");
-        fgets(temp,MAX_LINE,stdin);
-	if (temp[1] != '\n')
-	{ 
-	    printf("Input is incorrect\n");
-	    memset(temp,'\0',sizeof(temp));
-	    exit(0);	
-	   // break;
-        }
-	if ((temp[0] == 's') || (temp[0] == 'S'))
-            strcpy(buffer, "CAP\n");
-        if ((temp[0] == 't') || (temp[0] == 'T'))
-	    strcpy(buffer, "FILE\n");
-        memset(temp,'\0',sizeof(temp));
-        printf("Enter the string: ");
-        fgets(buffer2, MAX_LINE, stdin);
-	strncat(buffer,buffer2,strlen(buffer2));
+       // memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
+       // printf("Please enter s for string, t for file, or q to quit: ");
+       // fgets(temp,MAX_LINE,stdin);
+       //if (temp[1] != '\n')
+	//{ 
+	//    printf("Input is incorrect\n");
+	//    memset(temp,'\0',sizeof(temp));
+	//    exit(0);	
+	//   // break;
+        //}
+	//if ((temp[0] == 's') || (temp[0] == 'S'))
+        //    strcpy(buffer, "CAP\n");
+        //if ((temp[0] == 't') || (temp[0] == 'T'))
+	//    strcpy(buffer, "FILE\n");
+        //memset(temp,'\0',sizeof(temp));
+        //printf("Enter the string: ");
+        //fgets(buffer2, MAX_LINE, stdin);
+	//strncat(buffer,buffer2,strlen(buffer2));
 
 
         /*  Send string to echo server, and retrieve response  */
 
-        Writeline(conn_s, buffer, strlen(buffer));
-        Readline(conn_s, buffer, MAX_LINE-1);
+        //Writeline(conn_s, buffer, strlen(buffer));
+        //Readline(conn_s, buffer, MAX_LINE-1);
 	/*  Output echoed string  */
 
-        printf("Echo response: %s\n", buffer);
+        //printf("Echo response: %s\n", buffer);
         memset(buffer,'\0',sizeof(buffer));
         memset(buffer2,'\0',sizeof(buffer2));
         
