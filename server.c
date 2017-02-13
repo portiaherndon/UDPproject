@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
     ssize_t   character;
     char      buf[MAX_LINE];
     ssize_t   num_bytes = 0;
+    int test=0;
  
 
     /*  Get port number from the command line, and
@@ -191,9 +192,12 @@ int main(int argc, char *argv[]) {
 				   {
 				       while(character = fread(buf,1,sizeof(buf),ifp))
 				       {
-			                    Writeline(conn_s,buf,strlen(buf));
-					    memset(buf,'\0',sizeof(buf));
-					    num_bytes = num_bytes + character;
+			                   // Writeline(conn_s,buf,strlen(buf));
+					   // test++;
+					   // printf("%d\n",test);
+					   // memset(buf,'\0',sizeof(buf));
+					   // num_bytes = num_bytes + character;
+					    printf("%s",buf);
 					
 				       }
 				   }while(character != 0);

@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
         /*  Output echoed string  */
 
         printf("Echo response: %s\n", buffer);
-        printf("Please enter s for string, t for file, or q to quit: ");
-        fgets(temp,MAX_LINE,stdin);
+        //printf("Please enter s for string, t for file, or q to quit: ");
+	//fgets(temp,MAX_LINE,stdin);
         memset(buffer,'\0',sizeof(buffer));
         memset(buffer2,'\0',sizeof(buffer2));
         int p = -1;
