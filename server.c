@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
     int       conn_s;                /*  connection socket         */
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
+    struct    sockaddr_in cliaddr;   /*	 client address structure  */
     char      buffer[MAX_LINE];      /*  character buffer          */
     char      buffer2[MAX_LINE];     /*  buffer for cap/file */
     char      buffer3[MAX_LINE];     /*  buffer for cap string */ 
@@ -58,6 +59,9 @@ int main(int argc, char *argv[]) {
     int test=0;
     char      message[MAX_LINE];
     char      bytes[100];
+    int msglen;
+    socklen_t clilen;
+    
  
 
     /*  Get port number from the command line, and
@@ -81,14 +85,24 @@ int main(int argc, char *argv[]) {
 	
     /*  Create the listening socket  */
 
-    if ( (list_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
+    /*if ( (list_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
 	fprintf(stderr, "ECHOSERV: Error creating listening socket.\n");
 	exit(EXIT_FAILURE);
+    }*/
+
+
+
+
+
+    conn_s = socket(PF_INET,SOCK_DGRAM,0);     //create UDP socket 
+    if(conn_s < 0)
+    {
+	exit(0);
     }
 
+    /*	Set all bytes in socket address structure to
+	zero, and fill in the relecant data members	*/	
 
-    /*  Set all bytes in socket address structure to
-        zero, and fill in the relevant data members   */
 
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family      = AF_INET;
@@ -99,17 +113,21 @@ int main(int argc, char *argv[]) {
     /*  Bind our socket addresss to the 
 	listening socket, and call listen()  */
 
-    if ( bind(list_s, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 ) {
+    /*if ( bind(list_s, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 ) {
 	fprintf(stderr, "ECHOSERV: Error calling bind()\n");
 	exit(EXIT_FAILURE);
-    }
+    }*/
 
-    if ( listen(list_s, LISTENQ) < 0 ) {
+    bind(conn_s, &servaddr, sizeof(servaddr));  //UDP bind
+
+    /*if ( listen(list_s, LISTENQ) < 0 ) {
 	fprintf(stderr, "ECHOSERV: Error calling listen()\n");
 	exit(EXIT_FAILURE);
-    }
+    }*/
 
-    
+
+   
+   
     /*  Enter an infinite loop to respond
         to client requests and echo input  */
 
@@ -117,17 +135,17 @@ int main(int argc, char *argv[]) {
 
 	/*  Wait for a connection, then accept() it  */
 
-	if ( (conn_s = accept(list_s, NULL, NULL) ) < 0 ) {
+	/*if ( (conn_s = accept(list_s, NULL, NULL) ) < 0 ) {
 	    fprintf(stderr, "ECHOSERV: Error calling accept()\n");
 	    exit(EXIT_FAILURE);
-	}
+	}*/
 
-
+	
 	/*  Retrieve an input line from the connected socket
 	    then simply write it back to the same socket.     */
 
-	Readline(conn_s, buffer, MAX_LINE-1);
-	
+	//Readline(conn_s, buffer, MAX_LINE-1);
+	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,cliaddr,&clilen);
 	
 
 	memset(buffer2,'\0',sizeof(buffer2)); 
@@ -156,7 +174,8 @@ int main(int argc, char *argv[]) {
                 		buffer3[y] = toupper(buffer[y+4]);
 				y++;
 	    		}
-		    	Writeline(conn_s,buffer3, strlen(buffer3)); 
+		    	//Writeline(conn_s,buffer3, strlen(buffer3)); 
+			sendto(conn_s,buffer3,msglen,0,cliaddr,clilen);
 		    }
 		    else
 			break;

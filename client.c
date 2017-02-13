@@ -99,24 +99,70 @@ int main(int argc, char *argv[]) {
 
     
 
+    /*			create UDP socket		*/
+    int mysock;				/*connection socket*/
+    struct sockaddr_in myaddr, cliaddr; /*ip for client and server*/
+    socklen_t clilen;
+    int msglen;
+
+    mysock = socket(PF_INET,SOCK_DGRAM,0);
+    memset(&servaddr,0,sizeof(servaddr));
+    myaddr.sin_family = AF_INET;
+    myaddr.sin_port = htons(S_PORT);
+    myaddr.sin_addr = hton1(INADDR_ANY);
+    bind(mysock, &myaddr, sizeof(myaddr));
+    while(1)
+    {
+        len=sizeof(cliaddr);
+	msglen=recvfrom(mysock,msgbuf,MAX_LINE,0,cliaddr,&clilen);
+	memset(temp,'\0',sizeof(temp));    /*clear temp buffer */
+	printf("Please enter s for string, t for file, or q to quit: ");
+    	fgets(temp,MAX_LINE,stdion);
+    	if(temp[1] != '\n')
+    	{
+	    printf("Input is incorrect!")  //test for right amount of char
+	    memset(temp,'\0',sizeof(temp)); //reinitialize buffer
+	    exit(0); 				//exit upon error
+	    //break;	
+    	}
+	if((temp[0] == 's') || (temp[0] == 'S'))   
+	    strcpy(buffer,"CAP\n");   		//send cap if user enter s
+	if((temp[0] == 't') || (temp[0] == 'T'))
+	    strcpy(buffer,"FILE\n");		//send file is user enter t
+	memset(temp,'\0',sizeof(temp));		//reinitalize buffer
+	printf("Enter the string: ");		//request string from user
+	fgets(buffer2,MAX_LINE,stdin);		//receive string from user
+	strncat(buffer,buffer2,sizeof(buffer2));//concat string with action
+	
+	/*send string to server and receive response*/
+	sendto(mysock,buffer,MAX_LINE,0,cliaddr,clilen);
+	msglen = recvfrom(cli_sock,buffer,MAX_LINE,0,NULL,NULL);
+	
+    }    
+    
+
+    /*			UDP socket created		*/
+
+
+
+
+
+
     /*  connect() to the remote echo server  */
 
-    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
+    /*if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
 	printf("ECHOCLNT: Error calling connect()\n");
 	exit(EXIT_FAILURE);
-    }
+    }*/
 
 
     /*  Get string to echo from user  */
 
         memset(temp,'\0',sizeof(temp));   /* clear temp buffer */
         printf("Please enter s for string, t for file, or q to quit: ");
-    
         fgets(temp,MAX_LINE,stdin);
-
 	if (temp[1] != '\n')
-	{
-    
+	{ 
 	    printf("Input is incorrect\n");
 	    memset(temp,'\0',sizeof(temp));
 	    exit(0);	
@@ -129,7 +175,7 @@ int main(int argc, char *argv[]) {
         memset(temp,'\0',sizeof(temp));
         printf("Enter the string: ");
         fgets(buffer2, MAX_LINE, stdin);
-        strncat(buffer,buffer2,strlen(buffer2));
+	strncat(buffer,buffer2,strlen(buffer2));
 
 
         /*  Send string to echo server, and retrieve response  */
