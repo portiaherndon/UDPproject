@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
 	printf("Enter the string: ");		//request string from user
 	fgets(buffer2,MAX_LINE,stdin);		//receive string from user
 	strncat(buffer,buffer2,sizeof(buffer2));//concat string with action
-	
+ 	//printf("%s",buffer);	
 	/*send string to server and receive response*/
 	sendto(conn_s,buffer,MAX_LINE,0,(struct sockaddr *)&servaddr,sizeof(servaddr));
 	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,NULL,NULL);
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
 	printf("Print response: %s\n",buffer);
 	memset(buffer,'\0',sizeof(buffer));
 	memset(buffer2,'\0',sizeof(buffer2));
-	
+	close(conn_s);	
     }    
     
 
@@ -178,11 +178,11 @@ int main(int argc, char *argv[]) {
 	/*  Output echoed string  */
 
         //printf("Echo response: %s\n", buffer);
-        memset(buffer,'\0',sizeof(buffer));
-        memset(buffer2,'\0',sizeof(buffer2));
+        //memset(buffer,'\0',sizeof(buffer));
+        //memset(buffer2,'\0',sizeof(buffer2));
         
 
-    close(conn_s);
+   
     return EXIT_SUCCESS;
 }
 
