@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
 	Readline(conn_s, buffer, MAX_LINE-1);
 	
 	
-	//printf("%s\n", buffer);
+
 	memset(buffer2,'\0',sizeof(buffer2)); 
 	y = 0;
 	while (buffer[y] != '\n')
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 	    y++;
 	}
 	y = 0;
-	//printf("%s\n", buffer2);
+
 	memset(buffer3,'\0',sizeof(buffer3)); /*clear out buffer */
 	while(buffer2[x] != '\0')
 	{
@@ -148,13 +148,13 @@ int main(int argc, char *argv[]) {
 		    x++;
 		    if(buffer2[x] == 'P')
 		    {
-			//printf("%s\n",buffer2);
+
 			while(buffer[y+4] != '\n')
 	    		{
                 		buffer3[y] = toupper(buffer[y+4]);
 				y++;
 	    		}
-		    Writeline(conn_s,buffer3, strlen(buffer3)); 
+		    	Writeline(conn_s,buffer3, strlen(buffer3)); 
 		    }
 		    else
 			break;
@@ -187,21 +187,14 @@ int main(int argc, char *argv[]) {
 				
 				if (ifp != NULL)
 				{
-				   printf("open\n");
-				   do
-				   {
-				       while(character = fread(buf,1,sizeof(buf),ifp))
-				       {
-			                   // Writeline(conn_s,buf,strlen(buf));
-					   // test++;
-					   // printf("%d\n",test);
-					   // memset(buf,'\0',sizeof(buf));
-					   // num_bytes = num_bytes + character;
-					    printf("%s",buf);
-					
-				       }
-				   }while(character != 0);
-				}
+				  // printf("open\n");
+				     memset(buf,'\0',sizeof(buf));
+				     while(character = fread(buf,1,sizeof(buf),ifp)>0)
+				     {
+				         printf("%s",buf);
+			                // Writeline(conn_s,buf,strlen(buf));
+				     }
+				}    
 				else
 				{
 				    
@@ -213,15 +206,12 @@ int main(int argc, char *argv[]) {
 			    {
 				strcpy(buf,"NOTFOUND\n");
 				Writeline(conn_s, buf, strlen(buf));
-				Writeline(conn_s,buffer2,strlen(buffer2));
-				Writeline(conn_s,buffer3,strlen(buffer3));
 			    }
 			}
 			else
 				break;
 		    }
-		    else
-			break;
+		    else break;
 		}
 		else
 		    break;
@@ -231,13 +221,9 @@ int main(int argc, char *argv[]) {
 		
 	} 
 	x=0;
-
-	
-	//  Writeline(conn_s, buffer3, strlen(buffer3));
-	
+        //  Writeline(conn_s, buffer3, strlen(buffer3));
 	//  Writeline(conn_s, buf, strlen(buf));
 	
- 
 	/*  Close the connected socket  */
 
 	if ( close(conn_s) < 0 ) {
@@ -246,8 +232,6 @@ int main(int argc, char *argv[]) {
 	}
     }
 }
-
-
 /*helper functions */
 
 
