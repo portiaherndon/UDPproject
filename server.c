@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     ssize_t   num_bytes = 0;
     int test=0;
     char      message[MAX_LINE];
-    char      bytes[MAX_LINE];
+    char      bytes[100];
  
 
     /*  Get port number from the command line, and
@@ -200,8 +200,9 @@ int main(int argc, char *argv[]) {
 				    // bytes = (int)num_bytes;
 				     snprintf(bytes,sizeof(bytes), "%d",num_bytes);	
 				     strcpy(message,"OK\n");
-				     strncat(message,bytes,2);
-				     printf("%s",message);
+				     strncat(message,bytes,sizeof(bytes));
+				    // printf("%d",sizeof(num_bytes));
+				    // printf("%s",message);
 				     
                       		}    
 				else
