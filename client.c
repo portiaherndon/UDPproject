@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 	strncat(buffer,buffer2,sizeof(buffer2));//concat string with action
 	
 	/*send string to server and receive response*/
-	sendto(conn_s,buffer,MAX_LINE,0,(struct sockaddr *)&cliaddr,clilen);
+	sendto(conn_s,buffer,MAX_LINE,0,(struct sockaddr *)&servaddr,sizeof(servaddr));
 	msglen = recvfrom(conn_s,buffer,MAX_LINE,0,NULL,NULL);
 	/*output echoed results */
 	printf("Print response: %s\n",buffer);
